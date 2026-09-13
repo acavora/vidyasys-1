@@ -32,7 +32,6 @@ interface NotesHubProps {
   onRentNote: (note: NoteItem) => void;
   bookmarkedIds?: string[];
   onToggleBookmark?: (id: string) => void;
-  onOpenAiCopilot?: (query?: string) => void;
 }
 
 export const NotesHub: React.FC<NotesHubProps> = ({
@@ -44,7 +43,6 @@ export const NotesHub: React.FC<NotesHubProps> = ({
   onRentNote,
   bookmarkedIds = [],
   onToggleBookmark,
-  onOpenAiCopilot,
 }) => {
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all');
   const [formatFilter, setFormatFilter] = useState<'all' | 'handwritten' | 'typed'>('all');
@@ -401,17 +399,6 @@ export const NotesHub: React.FC<NotesHubProps> = ({
                       <span>Rent Options</span>
                     </button>
                   </div>
-
-                  {/* Ask Copilot Quick CTA */}
-                  {onOpenAiCopilot && (
-                    <button
-                      onClick={() => onOpenAiCopilot(`Give me high-yield exam derivations and questions for ${note.subject} (${note.title})`)}
-                      className="w-full mt-2 py-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-[11px] font-medium flex items-center justify-center gap-1.5 transition cursor-pointer"
-                    >
-                      <Sparkles className="w-3 h-3 text-amber-500" />
-                      <span>Ask AI Study Copilot about this course</span>
-                    </button>
-                  )}
                 </div>
               </div>
             );

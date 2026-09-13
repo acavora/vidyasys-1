@@ -1,5 +1,7 @@
 export type CampusId = 'all' | 'vit' | 'vp' | 'iitb' | 'bits' | 'dtu' | 'anna' | 'rvce' | 'nitt';
 
+export type NavigationTab = 'home' | 'notes' | 'projects' | 'tutors' | 'resources' | 'partnership';
+
 export interface Campus {
   id: CampusId;
   name: string;

@@ -26,8 +26,10 @@ import {
   StudentProfile,
   StudentPointTransaction,
   OrderRecord,
-  AdminUser
+  AdminUser,
+  NavigationTab
 } from './types';
+import { HomePage } from './components/HomePage';
 import { Header } from './components/Header';
 import { HeroBanner } from './components/HeroBanner';
 import { NotesHub } from './components/NotesHub';
@@ -41,7 +43,6 @@ import { CampusPartnershipHub } from './components/CampusPartnershipHub';
 import { EarningsCalculatorModal } from './components/EarningsCalculatorModal';
 import { CreateListingModal } from './components/CreateListingModal';
 import { UserLibraryModal } from './components/UserLibraryModal';
-import { AiStudyCopilotModal } from './components/AiStudyCopilotModal';
 import { CampusStudyRoomModal } from './components/CampusStudyRoomModal';
 import { AdminPortalModal } from './components/AdminPortalModal';
 import { VidyasysEmblem } from './components/VidyasysLogo';
@@ -66,7 +67,7 @@ export default function App() {
   const [campuses] = useState(CAMPUSES);
   const [selectedCampus, setSelectedCampus] = useState<CampusId>('vit');
   const [selectedBranch, setSelectedBranch] = useState<SubjectBranch | 'All'>('All');
-  const [activeTab, setActiveTab] = useState<'notes' | 'projects' | 'tutors' | 'resources' | 'partnership'>('notes');
+  const [activeTab, setActiveTab] = useState<NavigationTab>('home');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const [notes, setNotes] = useState<NoteItem[]>(INITIAL_NOTES);
@@ -104,7 +105,6 @@ export default function App() {
   const [isEarningsModalOpen, setIsEarningsModalOpen] = useState<boolean>(false);
   const [isCreateListingModalOpen, setIsCreateListingModalOpen] = useState<boolean>(false);
   const [isLibraryModalOpen, setIsLibraryModalOpen] = useState<boolean>(false);
-  const [isAiCopilotOpen, setIsAiCopilotOpen] = useState<boolean>(false);
   const [isStudyRoomOpen, setIsStudyRoomOpen] = useState<boolean>(false);
 
   // Toast & Notification System
@@ -472,7 +472,6 @@ export default function App() {
           setIsLibraryModalOpen(true);
         }}
         onOpenEarningsModal={() => setIsEarningsModalOpen(true)}
-        onOpenAiCopilot={() => setIsAiCopilotOpen(true)}
         onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
         onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
         isAdminLoggedIn={isAdminLoggedIn}
@@ -488,22 +487,44 @@ export default function App() {
         }}
       />
 
-      {/* Hero Banner with Vidyasys Positioning & Metric Counters */}
-      <HeroBanner
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        selectedBranch={selectedBranch}
-        setSelectedBranch={setSelectedBranch}
-        selectedCampus={selectedCampus}
-        setSelectedCampus={setSelectedCampus}
-        campuses={campuses}
-        onOpenEarningsModal={() => setIsEarningsModalOpen(true)}
-        onOpenAiCopilot={() => setIsAiCopilotOpen(true)}
-        onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
-      />
+      {/* Hero Banner with Branch Filters (shown on catalog pages) */}
+      {activeTab !== 'home' && (
+        <HeroBanner
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          selectedBranch={selectedBranch}
+          setSelectedBranch={setSelectedBranch}
+          selectedCampus={selectedCampus}
+          setSelectedCampus={setSelectedCampus}
+          campuses={campuses}
+          onOpenEarningsModal={() => setIsEarningsModalOpen(true)}
+          onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+        />
+      )}
 
       {/* Main Content Sections based on Active Tab */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
+        {activeTab === 'home' && (
+          <HomePage
+            onNavigate={(tab) => setActiveTab(tab)}
+            selectedCampus={selectedCampus}
+            setSelectedCampus={setSelectedCampus}
+            campuses={campuses}
+            notes={notes}
+            projects={projects}
+            tutors={tutors}
+            resources={resources}
+            onPreviewNote={(note) => setPreviewingNote(note)}
+            onInspectProject={(project) => setInspectingProject(project)}
+            onBookTutor={(tutor) => setBookingTutor(tutor)}
+            onOpenEarningsModal={() => setIsEarningsModalOpen(true)}
+            onOpenCreateModal={() => setIsCreateListingModalOpen(true)}
+            onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        )}
+
         {activeTab === 'notes' && (
           <NotesHub
             notes={notes}
@@ -514,7 +535,6 @@ export default function App() {
             onRentNote={(note) => setPreviewingNote(note)}
             bookmarkedIds={bookmarkedNoteIds}
             onToggleBookmark={handleToggleBookmarkNote}
-            onOpenAiCopilot={(query) => setIsAiCopilotOpen(true)}
           />
         )}
 
@@ -578,6 +598,12 @@ export default function App() {
                 Platform Pillars
               </h4>
               <ul className="space-y-2">
+                <li>
+                  <button onClick={() => setActiveTab('home')} className="hover:text-[#0277fa] transition cursor-pointer flex items-center gap-1.5 font-bold text-slate-800">
+                    <span className="text-slate-700">🏠</span>
+                    <span>Home &amp; Overview</span>
+                  </button>
+                </li>
                 <li>
                   <button onClick={() => setActiveTab('notes')} className="hover:text-[#0277fa] transition cursor-pointer flex items-center gap-1.5">
                     <span className="text-blue-600">📖</span>
@@ -741,17 +767,6 @@ export default function App() {
           studentName="Aarav Mehta"
           studentRoll="VIT-CMPN-2023-042"
           studentEmail="aarav.mehta@vit.edu.in"
-        />
-      )}
-
-      {isAiCopilotOpen && (
-        <AiStudyCopilotModal
-          isOpen={isAiCopilotOpen}
-          onClose={() => setIsAiCopilotOpen(false)}
-          selectedBranch={selectedBranch}
-          onNavigateToNotes={() => {
-            setActiveTab('notes');
-          }}
         />
       )}
 

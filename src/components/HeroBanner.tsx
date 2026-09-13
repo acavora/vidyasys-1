@@ -7,18 +7,17 @@ import {
   Cpu,
   GraduationCap
 } from 'lucide-react';
-import { SubjectBranch, CampusId, Campus } from '../types';
+import { SubjectBranch, CampusId, Campus, NavigationTab } from '../types';
 
 interface HeroBannerProps {
-  activeTab: 'notes' | 'projects' | 'tutors' | 'resources' | 'partnership';
-  setActiveTab: (tab: 'notes' | 'projects' | 'tutors' | 'resources' | 'partnership') => void;
+  activeTab: NavigationTab;
+  setActiveTab: (tab: NavigationTab) => void;
   selectedBranch: SubjectBranch | 'All';
   setSelectedBranch: (branch: SubjectBranch | 'All') => void;
   selectedCampus?: CampusId;
   setSelectedCampus?: (campus: CampusId) => void;
   campuses?: Campus[];
   onOpenEarningsModal: () => void;
-  onOpenAiCopilot?: () => void;
   onOpenStudyRoom?: () => void;
 }
 
